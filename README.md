@@ -13,4 +13,4 @@
 
 開啟 GitHub Pages：<https://kenkenno1.github.io/jp-biz/>
 
-版本：v1.1.1
+版本：v1.1.2
