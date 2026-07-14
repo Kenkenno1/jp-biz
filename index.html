@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant" data-theme="dark">
 <head>
-  <!-- 雙語書房 v1.2.0 · 2026-07-14 · base SHA256 10A27891F38BF1651395C0ADE2EE3905DF86FAFDD40421ADFC5FAA472BB23875 -->
+  <!-- 雙語書房 v1.3.0 · 2026-07-15 · pre-edit v1.2.0 SHA256 0DDFF30AE61157F7D049A2580EC85982878FFC6B9881241B9379BAA5A8D23623 -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#07090d" />
@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="雙語書房" />
-  <title>雙語書房 v1.2.0 | 中文 ⇄ 日本語</title>
+  <title>雙語書房 v1.3.0 | 中文 ⇄ 日本語</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
@@ -21,7 +21,7 @@
 
   <style>
     /* ============================================================
-       BILINGUAL CABINET · v1.2.0 — 中文 ⇄ 日本語
+       BILINGUAL CABINET · v1.3.0 — 中文 ⇄ 日本語
        Business mail generator and face-to-face interpreter.
        ============================================================ */
 
@@ -1923,12 +1923,12 @@
 
   <script>
   'use strict';
-  /* 雙語書房 v1.2.0 — canonical result / pending stream architecture */
+  /* 雙語書房 v1.3.0 — canonical result / pending stream architecture */
   const $=id=>document.getElementById(id);
   const CONFIG={DEBOUNCE_MS:700,GRID_MIN:.24,GRID_MAX:.76,DEFAULT_GRID:.42,API:'https://api.openai.com/v1',TTS:'https://texttospeech.googleapis.com/v1',TOAST_MS:3600,TTS_TIMEOUT:60000,VOICE_WAIT_MS:900};
   const KEYS={API:'openai_key',TTS:'tri_ttskey',MODEL:'bi_model',LAST_MODEL:'bi_last_model',THEME:'bi_theme',SRC:'bi_src_text',GRID:'bi_grid_split',CHAT_W:'bi_chat_width',LAYOUT:'bi_layout_version',LANG:'bi_lang_override',GLOSSARY:'bi_glossary',CHAT:'bi_chat_history',MODE:'bi_mode',SCENE:'bi_scene',AUDIENCE:'bi_audience',AUTO_SPEAK:'bi_auto_speak',AUTO_REFINE:'bi_auto_refine'};
   const MODE_POLICY=Object.freeze({mail:Object.freeze({auto:false,enter:false,autoSpeak:false,refine:true,mailTools:true}),interp:Object.freeze({auto:true,enter:true,autoSpeak:true,refine:false,mailTools:false})});
-  const MODELS=['gpt-5.4','gpt-5.4-mini'];
+  const MODELS=['gpt-5.6-terra','gpt-5.6-luna'];
   const LANGUAGES={
     'zh-TW':{display:'中文',name:'繁體中文（台灣）',tts:{cloudLang:'cmn-TW',cloudVoice:'cmn-TW-Wavenet-A',localLang:'zh-TW'}},
     ja:{display:'日文',name:'日本語',tts:{cloudLang:'ja-JP',cloudVoice:'ja-JP-Neural2-B',localLang:'ja-JP'}}
@@ -1995,7 +1995,7 @@
   function apiHeaders(){return{'Content-Type':'application/json','Authorization':`Bearer ${state.apiKey}`}}
   async function safeText(res){try{return await res.text()}catch{return''}}
   function invalidModel(status,text){return status===404||/invalid_model|model.*not found|no such model|unknown model/i.test(text||'')}
-  function preferredModels(){return[state.lastModel,state.model,...MODELS].filter((x,i,a)=>x&&a.indexOf(x)===i)}
+  function preferredModels(){return[state.model,state.lastModel,...MODELS].filter(x=>MODELS.includes(x)).filter((x,i,a)=>a.indexOf(x)===i)}
   async function postOpenAI(body,signal){let lastErr;for(const model of preferredModels()){const res=await apiFetch(`${CONFIG.API}/chat/completions`,{method:'POST',headers:apiHeaders(),body:JSON.stringify({...body,model}),signal});if(res.ok){state.lastModel=model;if(!isSelftest)persist(KEYS.LAST_MODEL,model);return res}const txt=await safeText(res);lastErr=new Error(`OpenAI ${res.status}: ${txt.slice(0,260)}`);if(!invalidModel(res.status,txt))throw lastErr}throw lastErr||new Error('沒有可用模型')}
   async function chatOnce(messages,signal){const res=await postOpenAI({messages,stream:false},signal);const data=await res.json(),choice=data?.choices?.[0],text=choice?.message?.content;if(typeof text!=='string')throw new Error('API 回應格式不完整');return{text:text.trim(),finishReason:choice?.finish_reason??null}}
   function completeChatText(reply,label='API 回應'){if(reply?.finishReason==='length')throw new Error(`${label}因長度限制被截斷，未套用`);return String(reply?.text??'')}
@@ -2269,6 +2269,7 @@
     for(const [label,s]of[['ASCII','ABC'],['digits','123'],['URL','https://example.com/a'],['punctuation','!?…'],['empty','']])assertion(`detect ${label} → unknown`,detectLang(s)==='unknown',r);assertion('detect never returns en',['ABC','123','!?','','中文','かな'].every(x=>detectLang(x)!=='en'),r);
     const cases=[['full colon','件名：測試\n\n本文',true],['half colon','件名: 測試\n本文',true],['BOM','\uFEFF件名：測試\n本文',true],['CRLF','件名：測試\r\n\r\n本文',true],['outer fence','```text\n件名：測試\n\n本文\n```',true],['markdown decorated','**件名：** 測試\n本文',false],['preamble','以下是郵件：\n件名：測試\n本文',false],['mid-body','前文\n件名：測試\n本文',false],['empty subject','件名：\n本文',false],['empty body','件名：測試',false],['partial fence','```\n件名：測試\n```\n正文',false],['fence in body','```text\n件名：測試\n\n本文```片段\n```',false]];
     for(const[c,s,ok]of cases)assertion(`parser ${c}`,parseMailResult(s).ok===ok,r);const rt=parseMailResult(serializeMailResult('題目','內文'));assertion('parse/serialize round-trip',rt.subject==='題目'&&rt.body==='內文',r);
+    assertion('model catalog defaults Terra and offers Luna only',JSON.stringify(MODELS)===JSON.stringify(['gpt-5.6-terra','gpt-5.6-luna']),r);
     assertion('mode policy mail manual',!modePolicy('mail').auto&&!modePolicy('mail').enter&&modePolicy('mail').refine,r);assertion('mode policy interp auto/enter',modePolicy('interp').auto&&modePolicy('interp').enter&&!modePolicy('interp').refine,r);assertion('placeholder detection',findPlaceholders('【宛名未入力】 ○○').length===2,r);
     const required=['src','out1','revOut1','subjectBar','modeSwitch','sceneSelect','audienceSelect','resultBanner','autoSpeak','voiceSourceChip','chatLog','chatScrim','btnClearChat'];for(const id of required)assertion(`required DOM #${id}`,!!$(id),r);
     const readingSizes=[el.src,el.out1,el.revOut1].map(node=>getComputedStyle(node).fontSize);assertion('source/target/reverse share reading size',new Set(readingSizes).size===1,r);assertion('reverse uses output typography',el.revOut1.classList.contains('output-text')&&el.revOut1.classList.contains('reverse-text'),r);
@@ -2285,6 +2286,7 @@
   function fakeSpeechEngine(initial=[]){let voices=Array.from(initial);const listeners=new Set(),spoken=[];return{spoken,getVoices:()=>voices,addEventListener:(type,fn)=>{if(type==='voiceschanged')listeners.add(fn)},removeEventListener:(type,fn)=>{if(type==='voiceschanged')listeners.delete(fn)},setVoices:next=>{voices=Array.from(next);for(const fn of[...listeners])fn()},speak:u=>spoken.push(u),cancel:()=>{}}}
   function createHermeticTransport(){const queue=[];const fn=async(url)=>{if(url!==`${CONFIG.API}/chat/completions`)throw new Error(`Hermetic transport blocked unexpected URL: ${url}`);if(!queue.length)throw new Error('Hermetic response queue empty');return queue.shift()};fn.queue=queue;return fn}
   async function runHermeticTests(){const results=[],check=async(name,fn)=>{try{assertion(name,await fn(),results)}catch(e){console.error(name,e);assertion(name,false,results)}};const mock=createHermeticTransport();state.transport=mock;state.network.realCalls=0;
+    await check('selected model outranks last successful model',async()=>{const savedModel=state.model,savedLast=state.lastModel,seen=[];state.model='gpt-5.6-terra';state.lastModel='gpt-5.6-luna';state.transport=async(_url,options)=>{seen.push(JSON.parse(options.body).model);return chatResponse('ok','stop')};await chatOnce([{role:'user',content:'x'}],new AbortController().signal);state.model=savedModel;state.lastModel=savedLast;state.transport=mock;return seen[0]==='gpt-5.6-terra'});
     await check('prompt route mail zh→ja generation',()=>{const p=buildSystemPrompt('mail','zh-TW','ja');return p.includes('send-ready Japanese business email')&&p.includes('件名：')});
     await check('prompt route mail ja→zh reader',()=>buildSystemPrompt('mail','ja','zh-TW').includes('incoming Japanese email'));
     await check('prompt route interp spoken',()=>buildSystemPrompt('interp','zh-TW','ja').includes('face-to-face interpreter'));

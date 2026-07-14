@@ -7,6 +7,7 @@
 - 日文來信翻成繁體中文
 - 面對面中日口譯與譯文朗讀
 - 反譯、商務潤稿、字彙表與選字問 AI
+- 預設使用 GPT-5.6 Terra，並可在設定切換 GPT-5.6 Luna
 
 本專案為純前端靜態頁面。OpenAI API Key 與選用的 Google Cloud TTS Key 由使用者在瀏覽器本機設定。
 
@@ -14,4 +15,4 @@
 
 開啟 GitHub Pages：<https://kenkenno1.github.io/jp-biz/>
 
-版本：v1.2.0
+版本：v1.3.0
