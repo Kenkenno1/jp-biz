@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-Hant" data-theme="dark">
 <head>
-  <!-- 雙語書房 v1.1.2 · 2026-07-14 · base SHA256 10A27891F38BF1651395C0ADE2EE3905DF86FAFDD40421ADFC5FAA472BB23875 -->
+  <!-- 雙語書房 v1.1.4 · 2026-07-14 · base SHA256 10A27891F38BF1651395C0ADE2EE3905DF86FAFDD40421ADFC5FAA472BB23875 -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#07090d" />
@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="雙語書房" />
-  <title>雙語書房 v1.1.2 | 中文 ⇄ 日本語</title>
+  <title>雙語書房 v1.1.4 | 中文 ⇄ 日本語</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
@@ -21,7 +21,7 @@
 
   <style>
     /* ============================================================
-       BILINGUAL CABINET · v1.1.2 — 中文 ⇄ 日本語
+       BILINGUAL CABINET · v1.1.4 — 中文 ⇄ 日本語
        Business mail generator and face-to-face interpreter.
        ============================================================ */
 
@@ -329,6 +329,108 @@
     .icon.primary:hover{
       background:var(--rule);
       border-color:var(--rule-strong);
+    }
+
+    /* ============================================================
+       PRIMARY ACTION KEY — #btnTranslate
+       Saffron letterpress key anchored to the source-panel accent.
+       Mail = deliberate (calm key). Interp = immediate (glow ring).
+       Presentation only; text/behaviour unchanged.
+       ============================================================ */
+    /* Box-shadow keeps a UNIFORM 4-layer structure across every state
+       (sheen · ring · cast · hairline). The ring layer is transparent in
+       mail mode and coloured in interp mode, so the mode transition
+       interpolates layer-by-layer and settles cleanly (mismatched layer
+       counts otherwise leave a stuck ring after the morph). */
+    #btnTranslate{
+      appearance:none;
+      -webkit-appearance:none;
+      font-family:var(--font-body);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:0.06em;
+      line-height:1;
+      white-space:nowrap;
+      padding:7px 16px;
+      border-radius:var(--radius);
+      border:1.5px solid var(--accent-src);
+      color:var(--key-ink,#17110a);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0) 46%),
+        linear-gradient(180deg, rgba(0,0,0,0) 58%, rgba(0,0,0,0.16)),
+        var(--accent-src);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.5) inset,
+        0 0 0 3px transparent,
+        0 6px 16px var(--accent-src-glow),
+        0 1px 2px rgba(0,0,0,0.28);
+      cursor:pointer;
+      /* filter is intentionally NOT transitioned: hover/active/disabled use
+         different filter function lists (brightness/saturate vs grayscale),
+         which interpolate poorly — apply them instantly instead. */
+      transition:transform 120ms cubic-bezier(0.2,0.8,0.2,1), box-shadow 180ms ease;
+    }
+    /* Light (Vellum) theme: the shared saffron accent (#a86d18) is too light
+       for cream ink to clear WCAG AA, so the key uses a deeper amber of the
+       same hue — cohesive with the theme, ~5.5:1 contrast on the label. */
+    [data-theme="light"] #btnTranslate{
+      --key-ink:#fdf4df;
+      border-color:#6f460d;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0) 46%),
+        linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.18)),
+        #875510;
+    }
+    #btnTranslate:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.05) saturate(1.04);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.55) inset,
+        0 0 0 3px transparent,
+        0 10px 24px var(--accent-src-glow),
+        0 1px 2px rgba(0,0,0,0.28);
+    }
+    #btnTranslate:active{
+      transform:translateY(1px);
+      filter:brightness(0.98);
+      box-shadow:
+        0 2px 5px rgba(0,0,0,0.32) inset,
+        0 0 0 3px transparent,
+        0 2px 6px var(--accent-src-glow),
+        0 1px 2px rgba(0,0,0,0.28);
+    }
+    #btnTranslate:focus-visible{
+      outline:2px solid var(--accent-src);
+      outline-offset:3px;
+    }
+    #btnTranslate:disabled{
+      opacity:0.42;
+      filter:grayscale(0.4);
+      box-shadow:
+        0 0 0 3px transparent,
+        0 1px 2px rgba(0,0,0,0.12);
+      transform:none;
+      cursor:not-allowed;
+    }
+    /* Interp mode: live/immediate — ring layer lit + brighter presence */
+    body[data-mode="interp"] #btnTranslate{
+      letter-spacing:0.08em;
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.55) inset,
+        0 0 0 3px var(--accent-src-glow),
+        0 8px 20px var(--accent-src-glow),
+        0 1px 2px rgba(0,0,0,0.28);
+    }
+    body[data-mode="interp"] #btnTranslate:hover{
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.6) inset,
+        0 0 0 4px var(--accent-src-glow),
+        0 12px 26px var(--accent-src-glow),
+        0 1px 2px rgba(0,0,0,0.28);
+    }
+    @media (prefers-reduced-motion: reduce){
+      #btnTranslate{ transition:none; }
+      #btnTranslate:hover, #btnTranslate:active{ transform:none; }
     }
     #btnTheme{
       min-width:34px;
@@ -1701,7 +1803,9 @@
     body[data-mode="interp"] #mailTools,body[data-mode="interp"] #subjectBar,body[data-mode="interp"] #btnRefine1,body[data-mode="interp"] #btnDiff1{display:none!important}
     .mode-switch{display:inline-flex;padding:3px;border:1px solid var(--rule);border-radius:9px;background:var(--panel);gap:2px;align-self:center}
     .mode-btn{border:0;border-radius:6px;background:transparent;color:var(--muted);padding:6px 11px;font:600 12px var(--font-body);cursor:pointer}
-    .mode-btn.active{background:var(--panel-2);color:var(--text);box-shadow:0 1px 5px rgba(0,0,0,.15)}
+    .mode-btn.active{background:var(--accent-src);color:#1a130a;box-shadow:0 1px 6px var(--accent-src-glow)}
+    [data-theme="light"] .mode-btn.active{background:#875510;color:#fdf4df}
+    .mode-sep{align-self:center;color:var(--faint);font-size:12px;padding:0 3px;pointer-events:none;user-select:none}
     .mail-tools{display:flex;gap:10px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--rule-soft);background:var(--panel-2);flex-wrap:wrap}
     .mail-tools label{font:600 10px var(--font-mono);letter-spacing:.12em;color:var(--muted)}
     .select-compact{border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--text);padding:5px 7px;font:12px var(--font-body)}
@@ -1766,7 +1870,7 @@
         <span class="wordmark">雙語書房</span><span class="subtitle">BILINGUAL STUDY</span>
         <span class="langs"><span class="l-zh">中</span><span class="sep">⇄</span><span class="l-ja">日</span></span>
         <div class="mode-switch" id="modeSwitch" role="group" aria-label="模式">
-          <button class="mode-btn" id="btnModeMail" data-mode="mail">✉ 郵件</button><button class="mode-btn" id="btnModeInterp" data-mode="interp">⇄ 口譯</button>
+          <button class="mode-btn" id="btnModeMail" data-mode="mail">✉ 郵件</button><span class="mode-sep" aria-hidden="true">⇄</span><button class="mode-btn" id="btnModeInterp" data-mode="interp">口譯</button>
         </div>
       </div>
       <button class="icon" id="btnGlossary">字彙表</button><button class="icon" id="btnChat">問 AI</button><button class="icon" id="btnTheme">◐</button><button class="icon" id="btnSettings">⚙ 設定</button>
@@ -1776,7 +1880,7 @@
 
     <section class="grid" id="grid">
       <section class="panel" id="srcPanel">
-        <div class="bar"><div class="panel-id"><span class="panel-mark">S</span><span class="chip"><span class="role">SOURCE</span><span class="sep"></span><span class="lang" id="srcLang">—</span></span><span class="count" id="srcCount">0 字</span></div>
+        <div class="bar"><div class="panel-id"><span class="panel-mark">S</span><span class="chip"><span class="role">原文</span><span class="sep"></span><span class="lang" id="srcLang">—</span></span><span class="count" id="srcCount">0 字</span></div>
           <div class="src-tools"><select class="select-compact" id="langOverride" aria-label="原文語言"><option value="auto">自動判斷</option><option value="zh-TW">中文</option><option value="ja">日本語</option></select><button class="icon" id="btnSpeakSrc">朗讀</button><span class="preedit-group"><select class="select-compact" id="preEditMode" aria-label="原文清理"><option value="format">格式清理</option><option value="correct">糾錯校正</option><option value="clarify">語意清晰</option><option value="business">商務口氣</option><option value="plain">白話易懂</option></select><button class="icon" id="btnPreEdit">編修</button></span><button class="primary" id="btnTranslate">生成郵件</button><button class="icon" id="btnCopySrc">複製</button><button class="icon" id="btnClear">清除</button></div>
         </div>
         <div class="mail-tools" id="mailTools"><label>場景 <select class="select-compact" id="sceneSelect"></select></label><label>對象 <select class="select-compact" id="audienceSelect"></select></label><span class="mail-hint" id="mailToolsHint">僅中→日時適用</span></div>
@@ -1788,7 +1892,7 @@
 
       <div class="outs" id="outs">
         <section class="panel" id="t1Panel" data-target-lang="ja">
-          <div class="bar"><div class="panel-id"><span class="panel-mark">T</span><span class="chip"><span class="role">TARGET</span><span class="sep"></span><span class="lang" id="t1Lang">JA</span></span><span class="count" id="t1Count">0 字</span><span class="status-stack"><span class="mini-chip" id="t1Status">待命</span><span class="mini-chip" id="voiceSourceChip">本機語音</span><span class="mini-chip" id="placeholderChip" hidden></span></span></div>
+          <div class="bar"><div class="panel-id"><span class="panel-mark">T</span><span class="chip"><span class="role">譯文</span><span class="sep"></span><span class="lang" id="t1Lang">日文</span></span><span class="count" id="t1Count">0 字</span><span class="status-stack"><span class="mini-chip" id="t1Status">待命</span><span class="mini-chip" id="voiceSourceChip">本機語音</span><span class="mini-chip" id="placeholderChip" hidden></span></span></div>
             <div class="actions"><label class="auto-speak"><input type="checkbox" id="autoSpeak">自動朗讀</label><button class="icon" id="btnSpeak1">朗讀</button><button class="icon" id="btnCopy1">複製本文</button><button class="icon" id="btnRefine1">商務潤稿</button><button class="icon" id="btnDiff1">差異</button><button class="icon" id="btnReverse1">反譯</button></div>
           </div>
           <div class="result-banner" id="resultBanner"><span id="resultBannerText"></span><button class="icon" id="btnRegenerate">依目前原文重新生成</button></div>
@@ -1813,18 +1917,18 @@
 
   <script>
   'use strict';
-  /* 雙語書房 v1.1.2 — canonical result / pending stream architecture */
+  /* 雙語書房 v1.1.4 — canonical result / pending stream architecture */
   const $=id=>document.getElementById(id);
   const CONFIG={DEBOUNCE_MS:700,GRID_MIN:.24,GRID_MAX:.76,DEFAULT_GRID:.42,API:'https://api.openai.com/v1',TTS:'https://texttospeech.googleapis.com/v1',TOAST_MS:3600,TTS_TIMEOUT:60000,VOICE_WAIT_MS:900};
   const KEYS={API:'openai_key',TTS:'tri_ttskey',MODEL:'bi_model',LAST_MODEL:'bi_last_model',THEME:'bi_theme',SRC:'bi_src_text',GRID:'bi_grid_split',CHAT_W:'bi_chat_width',LAYOUT:'bi_layout_version',LANG:'bi_lang_override',GLOSSARY:'bi_glossary',CHAT:'bi_chat_history',MODE:'bi_mode',SCENE:'bi_scene',AUDIENCE:'bi_audience',AUTO_SPEAK:'bi_auto_speak'};
   const MODE_POLICY=Object.freeze({mail:Object.freeze({auto:false,enter:false,autoSpeak:false,refine:true,mailTools:true}),interp:Object.freeze({auto:true,enter:true,autoSpeak:true,refine:false,mailTools:false})});
   const MODELS=['gpt-5.4','gpt-5.4-mini'];
   const LANGUAGES={
-    'zh-TW':{display:'ZH-TW',name:'繁體中文（台灣）',tts:{cloudLang:'cmn-TW',cloudVoice:'cmn-TW-Wavenet-A',localLang:'zh-TW'}},
-    ja:{display:'JA',name:'日本語',tts:{cloudLang:'ja-JP',cloudVoice:'ja-JP-Neural2-B',localLang:'ja-JP'}}
+    'zh-TW':{display:'中文',name:'繁體中文（台灣）',tts:{cloudLang:'cmn-TW',cloudVoice:'cmn-TW-Wavenet-A',localLang:'zh-TW'}},
+    ja:{display:'日文',name:'日本語',tts:{cloudLang:'ja-JP',cloudVoice:'ja-JP-Neural2-B',localLang:'ja-JP'}}
   };
-  const SCENES={general:['一般','依標準商業郵件結構，清楚傳達目的與必要資訊。'],request:['依頼','先說明背景與目的，再明確提出請求、期望時程與禮貌結語。'],reply:['回覆來信','先承接對方來信，再逐點回覆；不捏造未提供的前情。'],thanks:['御礼','具體說明感謝事項與影響，語氣真誠克制。'],apology:['お詫び','率直謝罪，依序交代原因、當前対応、再發防止與結語；未知原因不得推測。'],reminder:['催促','先顧及對方情況，再清楚提醒待辦與期望回覆日；避免責難。'],inquiry:['問い合わせ','說明詢問背景，列出具體問題與所需回覆資訊。'],report:['報告・連絡','先給結論，再交代進度、影響、待辦與需要對方確認之處。'],decline:['お断り','先致謝，再清楚婉拒並給可提供的替代方案；無替代方案時不得捏造。']};
-  const AUDIENCES={external:['社外取引先','完整使用尊敬語與謙讓語；以貴社／弊社稱呼，適合時使用「お世話になっております」。'],boss:['社內上司','使用丁寧語與尊敬語，適合時使用「お疲れ様です」。'],peer:['社內同事','使用簡潔自然的です・ます體，避免過度敬語。']};
+  const SCENES={general:['一般','依標準商業郵件結構，清楚傳達目的與必要資訊。'],request:['請託','先說明背景與目的，再明確提出請求、期望時程與禮貌結語。'],reply:['回信','先承接對方來信，再逐點回覆；不捏造未提供的前情。'],thanks:['致謝','具體說明感謝事項與影響，語氣真誠克制。'],apology:['道歉','率直謝罪，依序交代原因、當前対応、再發防止與結語；未知原因不得推測。'],reminder:['催促','先顧及對方情況，再清楚提醒待辦與期望回覆日；避免責難。'],inquiry:['洽詢','說明詢問背景，列出具體問題與所需回覆資訊。'],report:['報告聯絡','先給結論，再交代進度、影響、待辦與需要對方確認之處。'],decline:['婉拒','先致謝，再清楚婉拒並給可提供的替代方案；無替代方案時不得捏造。']};
+  const AUDIENCES={external:['客戶','完整使用尊敬語與謙讓語；以貴社／弊社稱呼，適合時使用「お世話になっております」。'],boss:['上司','使用丁寧語與尊敬語，適合時使用「お疲れ様です」。'],peer:['同事','使用簡潔自然的です・ます體，避免過度敬語。']};
   const PREEDIT={format:'只修復換行、空白與斷字等格式，不改寫、不翻譯、不增刪資訊。',correct:'只修正錯字、文法與標點，保持語意、語氣與語言。',clarify:'改善含糊或拗口處使意思清楚，不新增或刪除事實。',business:'改為專業禮貌的商務語氣，不翻譯、不增刪事實。',plain:'改為自然易懂的白話，不翻譯、不增刪事實。'};
   const isSelftest=location.hash==='#selftest';
   const state={
@@ -1950,7 +2054,7 @@
         audio.onerror=()=>{if(!gate())return;const notify=!auto;stopSpeaking();if(notify)toast('雲端語音播放失敗','error')};
         try{await audio.play()}catch{if(gate()){const notify=!auto;stopSpeaking();if(notify)toast('瀏覽器阻擋自動播放，請按「朗讀」','warning')}return}
         if(!gate())return;
-        setVoiceSource(cloudVoiceLabel(cfg.cloudVoice));
+        setVoiceSource('雲端語音');
         return;
       }catch(e){
         if(!gate())return;
@@ -1971,7 +2075,7 @@
     u.onend=()=>{if(gate())stopSpeaking()};
     u.onerror=()=>{if(!gate())return;const notify=!auto;stopSpeaking();if(notify)toast('本機語音播放失敗','error')};
     state.activeSpeechEngine=engine;
-    try{engine.speak(u);if(!gate())return;const label=voice?.name||'本機預設語音';setVoiceSource(cloudFailed?`雲端失敗 → ${label}`:label)}catch{state.activeSpeechEngine=null;if(gate()){const notify=!auto;stopSpeaking();if(notify)toast('本機語音播放失敗','error')}}
+    try{engine.speak(u);if(!gate())return;setVoiceSource(cloudFailed?'本機語音（雲端失敗）':'本機語音')}catch{state.activeSpeechEngine=null;if(gate()){const notify=!auto;stopSpeaking();if(notify)toast('本機語音播放失敗','error')}}
   }
   function speakResult(auto=false,jobId=state.jobId,resultRevision=state.result?.resultRevision){const r=state.result;if(!r)return;if(auto&&(r.completion!=='complete'||r.stale))return;speakText(r.body,r.tgtLang,{auto,resultRevision,jobId,mode:state.mode})}
 
@@ -2115,7 +2219,7 @@
     const selectedSourceText=()=>{const a=el.src.selectionStart,b=el.src.selectionEnd;return a===b?'':el.src.value.slice(a,b).trim().slice(0,1200)};
     el.src.addEventListener('mouseup',e=>{const text=selectedSourceText();if(!text){hideSelection();return}showSelection('source',text,{x:e.clientX,top:e.clientY,bottom:e.clientY})});
     el.src.addEventListener('keyup',e=>{if(!e.shiftKey||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(e.key))return;const text=selectedSourceText();if(!text){hideSelection();return}const rect=el.src.getBoundingClientRect(),x=rect.left+rect.width/2,y=Math.min(rect.bottom-24,rect.top+72);showSelection('source',text,{x,top:y,bottom:y})});
-    document.addEventListener('mouseup',e=>{const mouse={x:e.clientX,y:e.clientY};setTimeout(()=>{if(el.src===document.activeElement&&el.src.selectionStart!==el.src.selectionEnd)return;const sel=getSelection();if(!sel||sel.isCollapsed||!sel.toString().trim())return;const text=sel.toString().trim().slice(0,1200),node=sel.anchorNode?.nodeType===1?sel.anchorNode:sel.anchorNode?.parentElement;if(!node||!el.out1.contains(node))return;const rect=sel.getRangeAt(0).getBoundingClientRect(),hasRect=rect.width>0||rect.height>0,x=hasRect?rect.left+rect.width/2:mouse.x,top=hasRect?rect.top:mouse.y,bottom=hasRect?rect.bottom:mouse.y;showSelection('output',text,{x,top,bottom})},0)});
+    document.addEventListener('mouseup',e=>{const mouse={x:e.clientX,y:e.clientY};setTimeout(()=>{if(el.src===document.activeElement&&el.src.selectionStart!==el.src.selectionEnd)return;const sel=getSelection();if(!sel||sel.isCollapsed||!sel.toString().trim())return;const text=sel.toString().trim().slice(0,1200),node=sel.anchorNode?.nodeType===1?sel.anchorNode:sel.anchorNode?.parentElement;if(!node||!el.out1.contains(node))return;showSelection('output',text,{x:mouse.x,top:mouse.y,bottom:mouse.y})},0)});
     document.addEventListener('mousedown',e=>{if(!el.selectionTooltip.contains(e.target))hideSelection()});window.addEventListener('scroll',hideSelection,true);window.addEventListener('resize',hideSelection);
     let dragging=false;el.gridDivider.addEventListener('pointerdown',e=>{dragging=true;el.gridDivider.setPointerCapture(e.pointerId)});el.gridDivider.addEventListener('pointermove',e=>{if(!dragging)return;const r=el.grid.getBoundingClientRect(),mobile=matchMedia('(max-width:900px)').matches,v=mobile?(e.clientY-r.top)/r.height:(e.clientX-r.left)/r.width;setGridSplit(v)});const endDrag=()=>dragging=false;el.gridDivider.addEventListener('pointerup',endDrag);el.gridDivider.addEventListener('pointercancel',endDrag);
   }
@@ -2176,8 +2280,8 @@
     await check('voice empty catalog returns null',()=>selectLocalVoice([],'ja-JP')===null);
     await check('voice delayed voiceschanged selects Google',async()=>{const engine=fakeSpeechEngine();const pending=waitForVoiceCatalog(engine,80);setTimeout(()=>engine.setVoices([gJa]),5);const voices=await pending;return selectLocalVoice(voices,'ja-JP')===gJa});
     await check('stopFab visible state toggles class and hidden',()=>{setSpeakingUI(true);const shown=!$('stopFab').hidden&&$('stopFab').classList.contains('show');stopSpeaking();return shown&&$('stopFab').hidden&&!$('stopFab').classList.contains('show')});
-    await check('cloud failure chip shows actual local voice',async()=>{const savedKey=state.ttsKey,savedTransport=state.transport,engine=fakeSpeechEngine([gJa]);state.ttsKey='bad-key';state.transport=async url=>{if(url.startsWith(`${CONFIG.TTS}/`))return new Response('',{status:503});throw new Error(`Unexpected test URL: ${url}`)};await speakText('テスト','ja',{speechEngine:engine,utteranceFactory:value=>({text:value}),voiceWaitMs:20});const ok=engine.spoken.length===1&&engine.spoken[0].voice===gJa&&el.voiceSourceChip.textContent==='雲端失敗 → Google 日本語';stopSpeaking();state.ttsKey=savedKey;state.transport=savedTransport;return ok});
-    await check('cloud missing audioContent falls back safely',async()=>{const savedKey=state.ttsKey,savedTransport=state.transport,engine=fakeSpeechEngine([msJa]);state.ttsKey='test-key';state.transport=async url=>{if(url.startsWith(`${CONFIG.TTS}/`))return new Response('{}',{status:200,headers:{'Content-Type':'application/json'}});throw new Error(`Unexpected test URL: ${url}`)};await speakText('テスト','ja',{speechEngine:engine,utteranceFactory:value=>({text:value}),voiceWaitMs:20});const ok=engine.spoken.length===1&&el.voiceSourceChip.textContent==='雲端失敗 → Microsoft Ayumi';stopSpeaking();state.ttsKey=savedKey;state.transport=savedTransport;return ok});
+    await check('cloud failure chip shows actual local voice',async()=>{const savedKey=state.ttsKey,savedTransport=state.transport,engine=fakeSpeechEngine([gJa]);state.ttsKey='bad-key';state.transport=async url=>{if(url.startsWith(`${CONFIG.TTS}/`))return new Response('',{status:503});throw new Error(`Unexpected test URL: ${url}`)};await speakText('テスト','ja',{speechEngine:engine,utteranceFactory:value=>({text:value}),voiceWaitMs:20});const ok=engine.spoken.length===1&&engine.spoken[0].voice===gJa&&el.voiceSourceChip.textContent==='本機語音（雲端失敗）';stopSpeaking();state.ttsKey=savedKey;state.transport=savedTransport;return ok});
+    await check('cloud missing audioContent falls back safely',async()=>{const savedKey=state.ttsKey,savedTransport=state.transport,engine=fakeSpeechEngine([msJa]);state.ttsKey='test-key';state.transport=async url=>{if(url.startsWith(`${CONFIG.TTS}/`))return new Response('{}',{status:200,headers:{'Content-Type':'application/json'}});throw new Error(`Unexpected test URL: ${url}`)};await speakText('テスト','ja',{speechEngine:engine,utteranceFactory:value=>({text:value}),voiceWaitMs:20});const ok=engine.spoken.length===1&&el.voiceSourceChip.textContent==='本機語音（雲端失敗）';stopSpeaking();state.ttsKey=savedKey;state.transport=savedTransport;return ok});
     await check('cloud audio error clears speaking state',async()=>{const savedKey=state.ttsKey,savedTransport=state.transport;let audio;state.ttsKey='test-key';state.transport=async url=>{if(url.startsWith(`${CONFIG.TTS}/`))return new Response(JSON.stringify({audioContent:'ZmFrZQ=='}),{status:200,headers:{'Content-Type':'application/json'}});throw new Error(`Unexpected test URL: ${url}`)};await speakText('テスト','ja',{auto:true,audioFactory:src=>(audio={src,onended:null,onerror:null,pause(){},async play(){}})});const fail=audio.onerror;fail();const ok=!state.speaking&&$('stopFab').hidden;state.ttsKey=savedKey;state.transport=savedTransport;return ok});
     await check('delayed voice rechecks stop/job/mode/result gates',async()=>{const savedKey=state.ttsKey,engine=fakeSpeechEngine();state.ttsKey='';state.mode='interp';state.jobId=61;state.result={resultRevision:9};const pending=speakText('テスト','ja',{auto:true,jobId:61,mode:'interp',resultRevision:9,speechEngine:engine,utteranceFactory:value=>({text:value}),voiceWaitMs:80});state.jobId=62;state.mode='mail';state.result={resultRevision:10};stopSpeaking();engine.setVoices([gJa]);await pending;state.ttsKey=savedKey;return engine.spoken.length===0&&!state.speaking});
     await check('auto activation rejection cleans silently',async()=>{const savedKey=state.ttsKey,savedTransport=state.transport,before=$('toastHost').childElementCount;state.ttsKey='test-key';state.transport=async url=>{if(url.startsWith(`${CONFIG.TTS}/`))return new Response(JSON.stringify({audioContent:'ZmFrZQ=='}),{status:200,headers:{'Content-Type':'application/json'}});throw new Error(`Unexpected test URL: ${url}`)};await speakText('テスト','ja',{auto:true,audioFactory:src=>({src,onended:null,onerror:null,pause(){},async play(){throw new DOMException('activation','NotAllowedError')}})});const ok=!state.speaking&&$('stopFab').hidden&&$('toastHost').childElementCount===before;state.ttsKey=savedKey;state.transport=savedTransport;return ok});
