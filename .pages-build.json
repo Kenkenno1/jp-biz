@@ -1,0 +1,5 @@
+{
+  "seed": 31002,
+  "html": ["index.html"],
+  "copy": ["assets", "favicon.ico", "manifest.webmanifest"]
+}
